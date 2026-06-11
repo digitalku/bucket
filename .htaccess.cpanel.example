@@ -1,0 +1,41 @@
+# =============================================================================
+# cPanel / Shared Hosting Deployment — Root-Level .htaccess
+# =============================================================================
+#
+# DIRECTORY STRUCTURE ON SERVER
+# ──────────────────────────────
+# public_html/
+# ├── .htaccess          ← this file (rename from .htaccess.cpanel.example)
+# └── bucket/            ← full Laravel project uploaded here
+#     ├── app/
+#     ├── public/        ← Laravel's real web root
+#     │   ├── .htaccess  ← already correct, leave it as-is
+#     │   └── index.php
+#     ├── ...
+#     └── .env
+#
+# HOW TO DEPLOY
+# ─────────────
+# 1. Upload the entire project to ~/public_html/bucket/ (or any subfolder name)
+# 2. Copy this file to ~/public_html/.htaccess
+#    (rename it — remove the .cpanel.example suffix)
+# 3. Update the RewriteRule path below if your subfolder name is different
+# 4. Set APP_URL in .env to your actual domain: https://yourdomain.com
+# 5. Run: php artisan storage:link  (via SSH or cPanel Terminal)
+# 6. Make sure storage/ and bootstrap/cache/ are writable (755/644)
+#
+# IF YOUR DOMAIN POINTS DIRECTLY TO public_html/
+# ───────────────────────────────────────────────
+# (i.e. no subfolder — project IS in public_html/)
+# Replace ALL content below with the contents of public/.htaccess
+# and move public/index.php + public/.htaccess to public_html/ directly.
+# This is the "symlink-free" flat deployment method.
+# =============================================================================
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Route all requests into the Laravel public/ folder inside the subfolder
+    # Change "bucket" to whatever subfolder name you used
+    RewriteRule ^(.*)$ /bucket/public/$1 [L]
+</IfModule>
